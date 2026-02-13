@@ -4,11 +4,14 @@
 <meta charset="UTF-8">
 <title>Meenu, I'm Sorry ❤️</title>
 
+<!-- Romantic Cursive Font -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
   overflow: hidden;
-  font-family: Arial, sans-serif;
+  font-family: 'Great Vibes', cursive;
   background: linear-gradient(135deg, #ff758c, #ff7eb3);
   text-align: center;
   color: white;
@@ -23,27 +26,31 @@ body {
 
 /* animated text */
 #mainText {
-  font-size: 42px;
+  font-size: 52px;
   min-height: 60px;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
 }
 
 h2 {
   margin-top: 10px;
+  font-size: 32px;
 }
 
 /* buttons */
 button {
   padding: 15px 30px;
-  font-size: 18px;
+  font-size: 20px;
   margin: 10px;
   border: none;
   border-radius: 12px;
   cursor: pointer;
+  font-family: 'Great Vibes', cursive;
 }
 
 #yes {
   background-color: #ff2e63;
   color: white;
+  transition: 0.3s;
 }
 
 #yes:hover {
@@ -61,7 +68,7 @@ button {
   position: absolute;
   top: -10px;
   color: red;
-  font-size: 20px;
+  font-size: 24px;
   animation: fall linear forwards;
 }
 
@@ -71,7 +78,6 @@ button {
     opacity: 0;
   }
 }
-
 </style>
 </head>
 
@@ -86,14 +92,17 @@ button {
 <button id="no" onmouseover="moveNo()">No 😢</button>
 </div>
 
-<!-- Sasto Mutu Music -->
-<iframe width="0" height="0"
-src="https://www.youtube.com/embed/5QfP9sP8d6k?autoplay=1&loop=1&playlist=5QfP9sP8d6k"
-frameborder="0"
-allow="autoplay">
-</iframe>
+<!-- Simple Romantic Background Music -->
+<audio id="bgMusic" autoplay loop>
+  <source src="romantic.mp3" type="audio/mpeg">
+</audio>
 
 <script>
+
+/* If browser blocks autoplay, play on first click */
+window.addEventListener("click", function() {
+  document.getElementById("bgMusic").play();
+}, { once: true });
 
 /* letter-by-letter text */
 let text = "Meenu, will you be my Valentine? ❤️";
@@ -112,9 +121,9 @@ typeWriter();
 /* yes clicked */
 function yesClicked() {
   document.body.innerHTML = `
-  <div style="margin-top:150px;">
-    <h1>I'm really sorry Meenu ❤️</h1>
-    <h2>— Utsav</h2>
+  <div style="margin-top:150px; font-family: 'Great Vibes', cursive;">
+    <h1 style="font-size:60px;">I'm really sorry Meenu ❤️</h1>
+    <h2 style="font-size:40px;">— Utsav</h2>
   </div>`;
 }
 
@@ -147,3 +156,4 @@ setInterval(createHeart, 300);
 
 </body>
 </html>
+
