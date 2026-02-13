@@ -162,4 +162,511 @@
     button{
       padding: 13px 22px;
       font-size: clamp(16px, 2.1vw, 20px);
-      border: none
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active{ transform: translateY(1px) scale(0.99); }
+
+    #yes{
+      background: linear-gradient(135deg, #ff2e63, #ff7eb3);
+      color:white;
+      box-shadow: 0 16px 34px rgba(255,46,99,0.35);
+    }
+    #yes:hover{ transform: scale(1.05); filter: brightness(1.03); }
+
+    #no{
+      background: rgba(20,20,20,0.55);
+      color:white;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+      position: absolute;
+      left: 50%;
+      transform: translateX(120px);
+      will-change: transform, left, top;
+    }
+
+    /* mini player */
+    .player{
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      z-index: 6;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+    }
+    .player button{
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      background: rgba(255,255,255,0.18);
+      color:#fff;
+      box-shadow:none;
+    }
+    .player .label{
+      text-align:left;
+      line-height: 1.1;
+      font-size: 12px;
+      opacity: 0.95;
+    }
+    .player input[type="range"]{
+      width: 110px;
+      accent-color: white;
+    }
+
+    /* modal popup */
+    .modal{
+      position: fixed;
+      inset: 0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 10;
+      padding: 18px;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .modal.show{ display:flex; }
+    .modalCard{
+      width: min(720px, 92vw);
+      border-radius: 26px;
+      background: linear-gradient(135deg, var(--glass2), rgba(255,255,255,0.10));
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: var(--shadow);
+      padding: clamp(18px, 3vw, 30px);
+      transform: translateY(14px) scale(0.98);
+      opacity: 0;
+      animation: popIn 420ms ease forwards;
+    }
+    @keyframes popIn{
+      to{ transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .modalCard h1{
+      margin: 6px 0 10px;
+      font-size: clamp(28px, 4.2vw, 54px);
+      text-shadow: var(--textShadow);
+    }
+    .modalCard p{
+      margin: 0 0 18px;
+      font-size: clamp(14px, 2.2vw, 20px);
+      opacity: 0.96;
+    }
+    .modalActions{
+      display:flex;
+      justify-content:center;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+    .modalActions button{
+      background: rgba(255,255,255,0.18);
+      color:#fff;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow:none;
+    }
+
+    /* confetti pieces */
+    .confetti{
+      position: fixed;
+      width: 10px;
+      height: 14px;
+      top: -20px;
+      left: 50%;
+      border-radius: 3px;
+      opacity: 0.95;
+      z-index: 9;
+      pointer-events:none;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall{
+      to{
+        transform: translate(var(--dx), 115vh) rotate(var(--rot));
+        opacity: 0.9;
+      }
+    }
+
+    /* extra mobile spacing */
+    @media (max-width: 480px){
+      .container{ margin-top: 8vh; }
+      .player{ left: 10px; right: 10px; width: auto; justify-content: space-between; }
+      .player input[type="range"]{ width: 90px; }
+      #no{ transform: translateX(95px); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="glow"></div>
+
+  <div class="container">
+    <div class="badge">✨ A tiny message • ❤️ • tap anywhere for music</div>
+
+    <h1 id="mainText"></h1>
+
+    <h2>Chitta nadukhau, narisau hai... ❤️</h2>
+
+    <div class="btnRow" id="btnRow">
+      <button id="yes">Yes ❤️</button>
+      <button id="no">No 😢</button>
+    </div>
+  </div>
+
+  <!-- Mini music controls -->
+  <div class="player" aria-label="Music player">
+    <button id="musicBtn">▶︎</button>
+    <div class="label">
+      <div style="font-weight:800;">Romantic BGM</div>
+      <div style="opacity:.85;">(romantic.mp3)</div>
+    </div>
+    <input id="vol" type="range" min="0" max="100" value="70" />
+  </div>
+
+  <!-- Background music -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="romantic.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modalCard">
+      <h1>I'm really sorry Meenu ❤️</h1>
+      <p>Thank you for listening… you mean a lot. 🌸</p>
+      <div class="modalActions">
+        <button id="closeModal">Close</button>
+        <button id="moreHearts">More hearts ❤️</button>
+      </div>
+      <div style="margin-top:10px; opacity:.9; font-weight:700;">— Utsav</div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- MUSIC (autoplay attempt + smooth fade-in + controls) ----------
+    const music = document.getElementById("bgMusic");
+    const musicBtn = document.getElementById("musicBtn");
+    const vol = document.getElementById("vol");
+
+    let musicWanted = true;
+    let fading = false;
+
+    function setVolume(v){ music.volume = Math.max(0, Math.min(1, v)); }
+    setVolume(0.0);
+    vol.value = 70;
+
+    function fadeTo(target, ms=900){
+      if (fading) return;
+      fading = true;
+      const start = music.volume;
+      const startT = performance.now();
+      function step(t){
+        const p = Math.min(1, (t - startT) / ms);
+        const v = start + (target - start) * p;
+        setVolume(v);
+        if (p < 1) requestAnimationFrame(step);
+        else { fading = false; }
+      }
+      requestAnimationFrame(step);
+    }
+
+    async function tryPlay(){
+      if (!musicWanted) return;
+      try{
+        await music.play();
+        // Fade in to slider level
+        fadeTo((Number(vol.value) || 70) / 100, 900);
+        musicBtn.textContent = "⏸";
+      }catch(e){
+        // Autoplay blocked, wait for interaction
+        musicBtn.textContent = "▶︎";
+      }
+    }
+
+    window.addEventListener("load", tryPlay);
+
+    // first user interaction fallback
+    function firstInteract(){
+      tryPlay();
+      document.removeEventListener("click", firstInteract);
+      document.removeEventListener("touchstart", firstInteract);
+    }
+    document.addEventListener("click", firstInteract, { once:true });
+    document.addEventListener("touchstart", firstInteract, { once:true });
+
+    musicBtn.addEventListener("click", async (e)=>{
+      e.stopPropagation();
+      if (music.paused){
+        musicWanted = true;
+        await tryPlay();
+      } else {
+        musicWanted = false;
+        fadeTo(0, 350);
+        setTimeout(()=>{ music.pause(); musicBtn.textContent = "▶︎"; }, 380);
+      }
+    });
+
+    vol.addEventListener("input", ()=>{
+      const target = (Number(vol.value) || 70)/100;
+      if (!music.paused) fadeTo(target, 250);
+      else setVolume(target);
+    });
+
+    // ---------- TYPEWRITER (multi-line + cursor + tiny beep) ----------
+    const mainText = document.getElementById("mainText");
+    const cursor = document.createElement("span");
+    cursor.className = "cursor";
+    mainText.appendChild(cursor);
+
+    const lines = [
+      "Meenu…",
+      "I have something to tell you…",
+      "❤️",
+      "Will you be my Valentine?"
+    ];
+    let lineIdx = 0, charIdx = 0;
+
+    // Tiny "typing" beep using WebAudio (no external files)
+    let audioCtx = null;
+    function beep(){
+      // keep it subtle + safe
+      try{
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = "sine";
+        o.frequency.value = 650 + Math.random()*80;
+        g.gain.value = 0.008; // very low volume
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        o.stop(audioCtx.currentTime + 0.03);
+      }catch(_){}
+    }
+
+    function typeNext(){
+      const currentLine = lines[lineIdx];
+      if (charIdx < currentLine.length){
+        cursor.insertAdjacentText("beforebegin", currentLine.charAt(charIdx));
+        charIdx++;
+        if (Math.random() < 0.35) beep();
+        setTimeout(typeNext, 55);
+      } else {
+        // end of line
+        if (lineIdx < lines.length - 1){
+          cursor.insertAdjacentHTML("beforebegin", "<br>");
+          lineIdx++;
+          charIdx = 0;
+          setTimeout(typeNext, 420);
+        }
+      }
+    }
+    typeNext();
+
+    // ---------- BACKGROUND EFFECTS (sparkles + falling hearts) ----------
+    function rand(min,max){ return Math.random()*(max-min)+min; }
+
+    function createSparkle(){
+      const s = document.createElement("div");
+      s.className = "sparkle";
+      s.style.left = rand(0, window.innerWidth) + "px";
+      s.style.bottom = "-10px";
+      s.style.opacity = rand(0.25, 0.8);
+      s.style.transform = `scale(${rand(0.6,1.15)})`;
+      s.style.setProperty("--drift", rand(-80, 80) + "px");
+      s.style.animationDuration = rand(6, 11) + "s";
+      document.body.appendChild(s);
+      setTimeout(()=>s.remove(), 12000);
+    }
+    setInterval(createSparkle, 260);
+
+    function createHeart(){
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = "❤️";
+      h.style.left = rand(0, window.innerWidth) + "px";
+      h.style.fontSize = rand(18, 30) + "px";
+      h.style.opacity = rand(0.55, 0.95);
+      h.style.animationDuration = rand(4.5, 8) + "s";
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(), 9000);
+    }
+    setInterval(createHeart, 320);
+
+    // mouse/touch trail hearts
+    let lastTrail = 0;
+    function trailAt(x,y){
+      const now = Date.now();
+      if (now - lastTrail < 45) return; // limit spam
+      lastTrail = now;
+      const t = document.createElement("div");
+      t.className = "trail";
+      t.textContent = Math.random() < 0.75 ? "❤️" : "✨";
+      t.style.left = x + "px";
+      t.style.top = y + "px";
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(), 800);
+    }
+    window.addEventListener("mousemove", (e)=>trailAt(e.clientX, e.clientY));
+    window.addEventListener("touchmove", (e)=>{
+      const touch = e.touches && e.touches[0];
+      if (touch) trailAt(touch.clientX, touch.clientY);
+    }, { passive:true });
+
+    // ---------- FUN "NO" BUTTON (shrinks + changes text + jumps away) ----------
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const btnRow = document.getElementById("btnRow");
+
+    const noPhrases = [
+      "Are you sure? 🥺",
+      "Really sure?? 😭",
+      "Don't do this 😢",
+      "Pleasee… 🥲",
+      "Last chance 😭",
+      "Ok ok… 😔",
+      "No? 😭"
+    ];
+    let noCount = 0;
+
+    function moveNoButton(){
+      const rect = btnRow.getBoundingClientRect();
+      const pad = 10;
+      const w = noBtn.offsetWidth || 110;
+      const h = noBtn.offsetHeight || 44;
+
+      const x = rand(pad, Math.max(pad, rect.width - w - pad));
+      const y = rand(pad, Math.max(pad, rect.height - h - pad));
+
+      // place relative to btnRow
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+
+      // rotate a bit for fun
+      const rot = rand(-12, 12);
+      noBtn.style.transform = `translate(0,0) rotate(${rot}deg) scale(${Math.max(0.55, 1 - noCount*0.08)})`;
+    }
+
+    // Ensure btnRow has enough height for movement
+    function ensureRowSpace(){
+      const minH = Math.max(120, (window.innerHeight * 0.18));
+      btnRow.style.minHeight = minH + "px";
+    }
+    ensureRowSpace();
+    window.addEventListener("resize", ensureRowSpace);
+
+    function annoyNo(){
+      noCount++;
+      noBtn.textContent = noPhrases[Math.min(noCount-1, noPhrases.length-1)];
+      moveNoButton();
+
+      // make it a little smaller each time
+      const scale = Math.max(0.48, 1 - noCount*0.08);
+      noBtn.style.filter = `brightness(${Math.max(0.78, 1 - noCount*0.06)})`;
+
+      // if too many times, auto-switch to YES vibe
+      if (noCount >= 7){
+        noBtn.textContent = "Ok fine… 😅";
+        noBtn.style.opacity = 0.55;
+        noBtn.style.pointerEvents = "none";
+        // make YES pulse
+        yesBtn.animate([{transform:"scale(1)"},{transform:"scale(1.08)"},{transform:"scale(1)"}], {duration:700, iterations:2});
+      }
+    }
+
+    noBtn.addEventListener("mouseover", annoyNo);
+    noBtn.addEventListener("touchstart", (e)=>{ e.preventDefault(); annoyNo(); }, { passive:false });
+
+    // initial position inside row
+    setTimeout(moveNoButton, 50);
+
+    // ---------- YES: CONFETTI + MODAL POPUP + EXTRA HEARTS ----------
+    const modal = document.getElementById("modal");
+    const closeModal = document.getElementById("closeModal");
+    const moreHearts = document.getElementById("moreHearts");
+
+    function makeConfettiBurst(count=140){
+      for (let i=0;i<count;i++){
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = rand(0, window.innerWidth) + "px";
+        c.style.background = `hsl(${Math.floor(rand(0,360))} 90% 65%)`;
+        c.style.setProperty("--dx", rand(-220, 220) + "px");
+        c.style.setProperty("--rot", rand(-720, 720) + "deg");
+        c.style.animationDuration = rand(3.2, 5.2) + "s";
+        c.style.opacity = rand(0.75, 1);
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(), 6000);
+      }
+    }
+
+    function heartStorm(durationMs=2200){
+      const start = Date.now();
+      const timer = setInterval(()=>{
+        createHeart();
+        createHeart();
+      }, 80);
+      setTimeout(()=>clearInterval(timer), durationMs);
+    }
+
+    function openModal(){
+      modal.classList.add("show");
+    }
+    function closeIt(){
+      modal.classList.remove("show");
+    }
+
+    yesBtn.addEventListener("click", ()=>{
+      // music: ensure playing and a slight volume bump
+      musicWanted = true;
+      tryPlay();
+      if (!music.paused) fadeTo(Math.min(1, ((Number(vol.value)||70)/100) + 0.08), 250);
+
+      // effects
+      makeConfettiBurst(160);
+      heartStorm(2400);
+      openModal();
+    });
+
+    closeModal.addEventListener("click", closeIt);
+    modal.addEventListener("click", (e)=>{ if (e.target === modal) closeIt(); });
+
+    moreHearts.addEventListener("click", ()=>{
+      makeConfettiBurst(90);
+      heartStorm(2200);
+    });
+
+    // ---------- BONUS: tap anywhere = small sparkle burst ----------
+    function sparkleBurst(x,y){
+      for (let i=0;i<14;i++){
+        const s = document.createElement("div");
+        s.className = "sparkle";
+        s.style.left = (x + rand(-12, 12)) + "px";
+        s.style.top = (y + rand(-12, 12)) + "px";
+        s.style.bottom = "auto";
+        s.style.opacity = rand(0.3, 0.9);
+        s.style.transform = `scale(${rand(0.7,1.4)})`;
+        s.style.setProperty("--drift", rand(-120, 120) + "px");
+        s.style.animationDuration = rand(1.4, 2.4) + "s";
+        document.body.appendChild(s);
+        setTimeout(()=>s.remove(), 3000);
+      }
+    }
+    document.addEventListener("click", (e)=>sparkleBurst(e.clientX, e.clientY));
+    document.addEventListener("touchstart", (e)=>{
+      const t = e.touches && e.touches[0];
+      if (t) sparkleBurst(t.clientX, t.clientY);
+    }, { passive:true });
+  </script>
+</body>
+</html>
