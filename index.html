@@ -1,189 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meenu, I'm Sorry ❤️</title>
 
-<title>Meenu, I'm Sorry ❤️</title>
+  <style>
+    :root{
+      --glass: rgba(255,255,255,0.16);
+      --glass2: rgba(255,255,255,0.22);
+      --shadow: 0 18px 60px rgba(0,0,0,0.25);
+      --textShadow: 0 6px 18px rgba(0,0,0,0.25);
+    }
 
-<style>
-body {
-  margin: 0;
-  overflow: hidden;
-  font-family: Arial, sans-serif; /* Simple font */
-  background: linear-gradient(135deg, #ff758c, #ff7eb3);
-  text-align: center;
-  color: white;
-}
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      overflow:hidden;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:#fff;
+      background: linear-gradient(120deg,#ff5f7a,#ff7eb3,#7a5cff,#3ad6ff);
+      background-size: 400% 400%;
+      animation: bgShift 14s ease infinite;
+      text-align:center;
+    }
+    @keyframes bgShift{
+      0%{ background-position: 0% 50%;}
+      50%{ background-position: 100% 50%;}
+      100%{ background-position: 0% 50%;}
+    }
 
-/* container */
-.container {
-  margin-top: 100px;
-  position: relative;
-  z-index: 2;
-  padding: 20px;
-}
+    /* soft glow overlay */
+    .glow{
+      position:fixed; inset:-30%;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,.28), transparent 45%),
+        radial-gradient(circle at 80% 35%, rgba(255,255,255,.18), transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(255,255,255,.16), transparent 55%);
+      filter: blur(18px);
+      pointer-events:none;
+      z-index:0;
+    }
 
-/* animated text */
-#mainText {
-  font-size: 52px;
-  min-height: 60px;
-  text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-}
+    /* floating sparkles */
+    .sparkle{
+      position: fixed;
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 0 18px rgba(255,255,255,0.85);
+      opacity: 0.65;
+      pointer-events: none;
+      animation: floatUp linear forwards;
+      z-index: 1;
+    }
+    @keyframes floatUp{
+      to{
+        transform: translateY(-120vh) translateX(var(--drift));
+        opacity: 0;
+      }
+    }
 
-h2 {
-  margin-top: 10px;
-  font-size: 30px;
-}
+    /* falling hearts */
+    .heart{
+      position: fixed;
+      top: -10px;
+      font-size: 22px;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.25));
+      animation: fall linear forwards;
+      pointer-events:none;
+      z-index: 1;
+    }
+    @keyframes fall{
+      to{
+        transform: translateY(115vh) rotate(18deg);
+        opacity: 0;
+      }
+    }
 
-/* buttons */
-button {
-  padding: 15px 30px;
-  font-size: 20px;
-  margin: 10px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-family: Arial, sans-serif;
-}
+    /* mouse/touch trail hearts */
+    .trail{
+      position: fixed;
+      font-size: 18px;
+      pointer-events:none;
+      z-index: 3;
+      animation: trailPop 700ms ease forwards;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.2));
+    }
+    @keyframes trailPop{
+      0%{ transform: translate(-50%,-50%) scale(0.7); opacity: 0.0;}
+      20%{ opacity: 1;}
+      100%{ transform: translate(-50%,-80%) scale(1.35); opacity: 0;}
+    }
 
-#yes {
-  background-color: #ff2e63;
-  color: white;
-  transition: 0.3s;
-}
+    /* main card */
+    .container{
+      position: relative;
+      z-index: 4;
+      width: min(920px, 92vw);
+      margin: 10vh auto 0;
+      padding: clamp(18px, 3vw, 30px);
+      border-radius: 26px;
+      background: linear-gradient(135deg, var(--glass), rgba(255,255,255,0.10));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
 
-#yes:hover {
-  transform: scale(1.1);
-}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.15);
+      margin-bottom: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      font-size: 14px;
+    }
 
-#no {
-  background-color: #333;
-  color: white;
-  position: absolute;
-}
+    #mainText{
+      font-size: clamp(28px, 4.5vw, 56px);
+      line-height: 1.12;
+      margin: 10px 0 8px;
+      text-shadow: var(--textShadow);
+      min-height: 2.6em;
+      letter-spacing: 0.2px;
+    }
 
-/* falling hearts */
-.heart {
-  position: absolute;
-  top: -10px;
-  color: red;
-  font-size: 24px;
-  animation: fall linear forwards;
-}
+    /* blinking cursor */
+    .cursor{
+      display:inline-block;
+      width: 10px;
+      height: 1.05em;
+      margin-left: 6px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 2px;
+      vertical-align: -0.12em;
+      animation: blink 900ms step-end infinite;
+    }
+    @keyframes blink{ 50%{ opacity: 0; } }
 
-@keyframes fall {
-  to {
-    transform: translateY(110vh);
-    opacity: 0;
-  }
-}
+    h2{
+      font-size: clamp(16px, 2.4vw, 28px);
+      margin: 0 0 18px;
+      opacity: 0.95;
+      text-shadow: var(--textShadow);
+    }
 
-/* ✅ Mobile Responsive */
-@media (max-width: 768px) {
-  #mainText {
-    font-size: 34px;
-  }
+    .btnRow{
+      position: relative;
+      display:flex;
+      justify-content:center;
+      gap: 12px;
+      flex-wrap:wrap;
+      padding-bottom: 8px;
+    }
 
-  h2 {
-    font-size: 22px;
-  }
-
-  button {
-    font-size: 18px;
-    padding: 12px 20px;
-  }
-
-  .container {
-    margin-top: 80px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-<h1 id="mainText"></h1>
-
-<h2>Chitta nadukhau, narisau hai... ❤️</h2>
-
-<button id="yes" onclick="yesClicked()">Yes ❤️</button>
-<button id="no" onmouseover="moveNo()">No 😢</button>
-</div>
-
-<!-- Background Music -->
-<audio id="bgMusic" loop>
-  <source src="romantic.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-
-const music = document.getElementById("bgMusic");
-
-/* Try autoplay when page loads */
-window.addEventListener("load", function() {
-  music.play().catch(() => {
-    console.log("Autoplay blocked. Waiting for user interaction.");
-  });
-});
-
-/* Fallback for mobile: play on first touch */
-document.addEventListener("touchstart", function() {
-  music.play();
-}, { once: true });
-
-/* letter-by-letter text */
-let text = "Meenu, will you be my Valentine? ❤️";
-let i = 0;
-
-function typeWriter() {
-  if (i < text.length) {
-    document.getElementById("mainText").innerHTML += text.charAt(i);
-    i++;
-    setTimeout(typeWriter, 80);
-  }
-}
-
-typeWriter();
-
-/* yes clicked */
-function yesClicked() {
-  document.body.innerHTML = `
-  <div style="margin-top:120px; font-family: Arial, sans-serif; text-align:center; color:white;">
-    <h1 style="font-size:50px;">I'm really sorry Meenu ❤️</h1>
-    <h2 style="font-size:30px;">— Utsav</h2>
-  </div>`;
-}
-
-/* move no button */
-function moveNo() {
-  let button = document.getElementById("no");
-  let x = Math.random() * (window.innerWidth - 100);
-  let y = Math.random() * (window.innerHeight - 50);
-  button.style.left = x + "px";
-  button.style.top = y + "px";
-}
-
-/* falling hearts */
-function createHeart() {
-  let heart = document.createElement("div");
-  heart.innerHTML = "❤️";
-  heart.className = "heart";
-  heart.style.left = Math.random() * window.innerWidth + "px";
-  heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
-  document.body.appendChild(heart);
-
-  setTimeout(() => {
-    heart.remove();
-  }, 6000);
-}
-
-setInterval(createHeart, 300);
-
-</script>
-
-</body>
-</html>
-
-
+    button{
+      padding: 13px 22px;
+      font-size: clamp(16px, 2.1vw, 20px);
+      border: none
